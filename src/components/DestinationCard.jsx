@@ -24,7 +24,7 @@ const DestinationCard = ({ dest }) => {
                     <span className=" font-bold text-lg">${price}</span><span className="">/person</span>
                 </div>
             </div>
-            <CustomRenderFunction id={_id}></CustomRenderFunction>
+            <CustomRenderFunction id={_id} dest={dest}></CustomRenderFunction>
      </div>
         </div>
     );
