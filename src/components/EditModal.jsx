@@ -2,6 +2,7 @@
 
 import {Button, Input, Label, Modal, Surface, TextField} from "@heroui/react";
 import { FieldError ,Select, ListBox, TextArea} from "@heroui/react";
+import { redirect } from "next/navigation";
 
 
 
@@ -22,6 +23,7 @@ const EditModal = ({ destination }) => {
             body:JSON.stringify(destination)
         })
         const data = await res.json()
+        redirect("/destination")
   
         console.log(data)
     }

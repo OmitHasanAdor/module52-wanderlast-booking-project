@@ -1,4 +1,5 @@
 
+import DeleteDestination from "@/components/DeleteDestination";
 import EditModal from "@/components/EditModal";
 import { Calendar, MapPin } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
@@ -35,7 +36,10 @@ const BookingDetailsPage = async ({ params }) => {
                 </div>
                 <h2 className=" text-2xl font-semibold">Overview</h2>
                 <p className=" text-gray-500">{description}</p>
-           <EditModal destination={destination}></EditModal>
+                <div className=" flex gap-3 mt-4">
+                    <EditModal destination={destination}></EditModal>
+                    <DeleteDestination destination={destination}></DeleteDestination>
+                </div>
             </div>
         </div>
     );
