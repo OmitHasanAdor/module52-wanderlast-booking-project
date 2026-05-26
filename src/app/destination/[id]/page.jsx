@@ -1,4 +1,5 @@
 
+import BookingCard from "@/components/BookingCard";
 import DeleteDestination from "@/components/DeleteDestination";
 import EditModal from "@/components/EditModal";
 import { Calendar, MapPin } from "@gravity-ui/icons";
@@ -15,6 +16,7 @@ const BookingDetailsPage = async ({ params }) => {
     const { country, category, price, duration, departureDate, description, destinationName, imageUrl, _id } = destination
 
     return (
+        <>
         <div className=" rounded-2xl shadow-2xl max-w-3xl mx-auto mt-10">
 
             <div className="">
@@ -42,7 +44,8 @@ const BookingDetailsPage = async ({ params }) => {
                 </div>
             </div>
         </div>
-    );
+            <BookingCard destination={destination}></BookingCard>
+    </>);
 };
 
 export default BookingDetailsPage;

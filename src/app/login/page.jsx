@@ -2,6 +2,9 @@
 import { authClient } from "@/lib/auth-client";
 import { Check } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
+import { redirect } from "next/navigation";
+import { FaGoogle } from "react-icons/fa";
+import Link from "next/link";
 
 
 const LoginPage = () => {
@@ -15,14 +18,25 @@ const LoginPage = () => {
             rememberMe: true,
             callbackURL: "/",
         });
+        if (error) {
+            alert(error.message);
+        } else {
+            alert("Login successful! Redirecting to your dashboard...");
+           redirect("/");
+        }
     };
 
+      const handleGoogleSignIn= async ()=>{
+   await authClient.signIn.social({
+    provider: "google",
+  });
+  }
     return (
         <div>
             <h2 className=" text-3xl font-medium text-center mt-8">Login to Your Account</h2>
             <p className=" text-center">Welcome back! Please enter your details.</p>
-            <div className="">
-                <Form className="flex w-96 flex-col gap-4 border shadow-sm rounded-md mx-auto p-5" onSubmit={onSubmit}>
+            <div className="max-w-105 my-8 border shadow-sm rounded-md mx-auto p-5 space-y-3">
+                <Form className="flex w-96 flex-col gap-4 mx-auto p-5" onSubmit={onSubmit}>
 
                     {/* email */}
 
@@ -74,6 +88,15 @@ const LoginPage = () => {
 
                     </div>
                 </Form>
+                <div className="flex items-center gap-4 mt-3 w-full">
+    <hr className="flex-1 border-t border-gray-300" />
+    <span className="text-center text-gray-500  whitespace-nowrap">Or sign up with</span>
+    <hr className="flex-1 border-t border-gray-300" />
+</div>
+<Button variant="outline" className={'w-full flex items-center rounded-md gap-2'} onClick={handleGoogleSignIn}>
+  <FaGoogle />Sign In with Google
+</Button>
+<p className=" font-semibold text-center">Already have an account? <Link href="/login" className="text-cyan-500 hover:underline">Log in</Link></p>
             </div>
         </div>
     );
