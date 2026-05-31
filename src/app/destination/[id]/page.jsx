@@ -22,7 +22,8 @@ const BookingDetailsPage = async ({ params }) => {
             <div className="">
                 <Image src={imageUrl} alt={destinationName} width={600} height={400} className=" w-full h-100 rounded-2xl" />
             </div>
-            <div className=" p-5">
+            <div className=" grid-cols-3 p-10 grid gap-5">
+            <div className=" p-5  space-y-5 col-span-2 ">
                 <span className="flex items-center gap-2 text-gray-800">
                     <MapPin />
                     {country}
@@ -43,8 +44,9 @@ const BookingDetailsPage = async ({ params }) => {
                     <DeleteDestination destination={destination}></DeleteDestination>
                 </div>
             </div>
+            <BookingCard destination={destination} className=" col-span-1" />
+            </div>
         </div>
-            <BookingCard destination={destination}></BookingCard>
     </>);
 };
 
