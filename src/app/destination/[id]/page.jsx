@@ -11,7 +11,11 @@ import Link from "next/link";
 const BookingDetailsPage = async ({ params }) => {
 
     const { id } = await params;
-    const res = await fetch(`http://localhost:5000/destination/${id}`);
+    const res = await fetch(`http://localhost:5000/destination/${id}`,{
+        headers: {
+            authorization: 'logged in'
+        }
+    });
     const destination = await res.json()
     const { country, category, price, duration, departureDate, description, destinationName, imageUrl, _id } = destination
 

@@ -10,6 +10,12 @@ export const auth = betterAuth({
     // Optional: if you don't provide a client, database transactions won't be enabled.
     client
   }),
+  account: {
+        accountLinking: {
+            enabled: true,
+            trustedProviders: ["google"]
+        }
+    },
     emailAndPassword: { 
     enabled: true, 
   }, 
