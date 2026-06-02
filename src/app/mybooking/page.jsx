@@ -32,7 +32,7 @@ const MyBookingsPage = async () => {
                     bookings.map(booking => {
                         return <div key={booking._id} className=" p-5 rounded-md shadow-md mb-5 flex items-center gap-5 justify-between">
                             <div className="  ">
-                                <Image src={booking?.imageUrl} alt={booking?.destinationName} width={200} height={150} className=" rounded-md h-auto w-auto" />
+                                <Image src={booking?.imageUrl} alt={booking?.destinationName} width={200} height={150} className=" rounded-md h-25 w-auto" />
                             </div>
                             <div className="">
                                 <h3 className=" text-lg font-bold">{booking.destinationName}</h3>
