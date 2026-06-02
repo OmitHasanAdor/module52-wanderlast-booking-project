@@ -9,8 +9,8 @@ const Navbar = () => {
     const { data, error, isPending } = authClient.useSession();
     console.log("Session Data:", data);
     const user = data?.user;
-    console.log("User Data:", user);
-    console.log(user?.image);
+    console.log("User Data nav:", user);
+    // console.log(user?.image);
 
 
     return (

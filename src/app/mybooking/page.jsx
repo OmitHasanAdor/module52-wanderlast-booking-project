@@ -10,10 +10,17 @@ const MyBookingsPage = async () => {
     const session = await auth.api.getSession({
         headers: await headers() // you need to pass the headers object.
     })
+      const {token} =await auth.api.getToken({
+        headers: await headers()
+    })
     const user = session?.user;
     console.log("User in MyBookingsPage:", user);
     const id = user?.id;
-    const res = await fetch(`http://localhost:5000/bookings/${id}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/bookings/${id}`,{
+        headers:{
+            authorization: `Bearer ${token}`
+        }
+    });
     const bookings = await res.json()
     console.log('data', bookings)
 
@@ -25,7 +32,7 @@ const MyBookingsPage = async () => {
                     bookings.map(booking => {
                         return <div key={booking._id} className=" p-5 rounded-md shadow-md mb-5 flex items-center gap-5 justify-between">
                             <div className="  ">
-                                <Image src={booking?.imageUrl} alt={booking?.destinationName} width={200} height={150} className=" rounded-md" />
+                                <Image src={booking?.imageUrl} alt={booking?.destinationName} width={200} height={150} className=" rounded-md h-auto w-auto" />
                             </div>
                             <div className="">
                                 <h3 className=" text-lg font-bold">{booking.destinationName}</h3>

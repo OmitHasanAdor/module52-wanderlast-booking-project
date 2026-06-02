@@ -15,6 +15,7 @@ const BookingCard = ({ destination }) => {
     // console.log("Session Data:", user);
     const { country, category, price, duration, departureDate, description, destinationName, imageUrl, _id } = destination
 
+
     const handleBooking = async () => {
         const bookingData = {
             userId: user?.id,
@@ -29,10 +30,16 @@ const BookingCard = ({ destination }) => {
             departureDate: new Date(date),
             imageUrl
         };
-        const res = await fetch(`http://localhost:5000/bookings`, {
+
+        // token in client component
+const {data:tokenData}= await authClient.token()
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/bookings`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                authorization: `Bearer ${tokenData?.token}`
+            
             },
             body: JSON.stringify(bookingData)
         });

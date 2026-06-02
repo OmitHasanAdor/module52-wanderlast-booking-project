@@ -2,22 +2,28 @@
 import BookingCard from "@/components/BookingCard";
 import DeleteDestination from "@/components/DeleteDestination";
 import EditModal from "@/components/EditModal";
+import { auth } from "@/lib/auth";
 import { Calendar, MapPin } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
 
 const BookingDetailsPage = async ({ params }) => {
+    const {token} =await auth.api.getToken({
+        headers: await headers()
+    })
 
     const { id } = await params;
-    const res = await fetch(`http://localhost:5000/destination/${id}`,{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination/${id}`,{
         headers: {
-            authorization: 'logged in'
+            authorization: `Bearer ${token}`
         }
     });
     const destination = await res.json()
     const { country, category, price, duration, departureDate, description, destinationName, imageUrl, _id } = destination
+    console.log("Destination Data:", destination);
 
     return (
         <>
