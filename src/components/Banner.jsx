@@ -6,7 +6,7 @@ const Banner = () => {
       // ইনলাইন স্টাইল দিয়ে ব্যাকগ্রাউন্ড ইমেজ দিলে Vercel প্রোডাকশনে কখনো ইমেজ মিস হবে না
       style={{ backgroundImage: "url('/assets/Banner.png')" }}
       // h-150 এর বদলে ফিক্সড হাইট হিসেবে h-[550px] বা h-[600px] ব্যবহার করা হলো
-      className="bg-cover bg-center text-white flex justify-between flex-col items-center gap-5 h-[550px] w-full"
+      className="bg-cover bg-center text-white flex justify-between flex-col items-center gap-5 h-137 w-full"
     >
       <div className="p-10 text-center flex justify-center flex-col items-center gap-4 flex-1">
         <h1 className="text-4xl md:text-7xl font-bold leading-tight">
