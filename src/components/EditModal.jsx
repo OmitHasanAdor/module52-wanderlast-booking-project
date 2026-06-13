@@ -64,7 +64,7 @@ const EditModal = ({ destination }) => {
                                 <FieldError />
                               </TextField>
                 
-                              {/* Category - Updated Select Component */}
+                              {/* Category */}
                               <div>
                                 <Select
                                   name="category"

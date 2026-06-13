@@ -2,7 +2,7 @@ import { jwtClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient({
-    // .trim() ব্যবহার করায় এখন আর 'Invalid base URL' এরর আসবে না
+  
     baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL?.trim() || "https://module52-wanderlast-booking-project.vercel.app",
     plugins: [
         jwtClient()

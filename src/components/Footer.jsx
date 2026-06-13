@@ -30,7 +30,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+       
           <div>
             <h3 className="text-white mb-3 tracking-wide">QUICK LINKS</h3>
             <ul className="space-y-2">
