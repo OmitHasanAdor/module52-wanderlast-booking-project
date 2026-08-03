@@ -105,7 +105,7 @@ const LoginPage = () => {
                     </TextField>
 
                     <div className="flex justify-end">
-                        <Link href="/forgot-password" className="text-sm text-cyan-500 hover:underline">
+                        <Link href="/#" className="text-sm text-cyan-500 hover:underline">
                             Forgot password?
                         </Link>
                     </div>
