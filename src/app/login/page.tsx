@@ -1,45 +1,69 @@
 "use client";
+
 import { authClient } from "@/lib/auth-client";
 import { Check } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useState, FormEvent } from "react";
+import toast from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 
-
 const LoginPage = () => {
-    const onSubmit = async (e) => {
+    const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const user = Object.fromEntries(formData.entries());
-        const { data, error } = await authClient.signIn.email({
-            email: user.email, // required
-            password: user.password, // required
-            rememberMe: true,
-            callbackURL: "/",
-        });
-        if (error) {
-            alert(error.message);
-        } else {
-            alert("Login successful! Redirecting to your dashboard...");
-           redirect("/");
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        setIsSubmitting(true);
+        try {
+            const { error } = await authClient.signIn.email({
+                email,
+                password,
+                rememberMe: true,
+                callbackURL: "/",
+            });
+
+            if (error) {
+                toast.error(error.message ?? "Login failed. Please check your credentials.");
+            } else {
+                toast.success("Login successful! Redirecting...");
+                router.push("/");
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            toast.error("Something went wrong. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-      const handleGoogleSignIn= async ()=>{
-   await authClient.signIn.social({
-    provider: "google",
-  });
-  }
+    const handleGoogleSignIn = async () => {
+        setIsGoogleLoading(true);
+        try {
+            await authClient.signIn.social({
+                provider: "google",
+            });
+        } catch (err) {
+            console.error("Google sign in error:", err);
+            toast.error("Google sign in failed. Please try again.");
+            setIsGoogleLoading(false);
+        }
+    };
+
     return (
         <div>
-            <h2 className=" text-3xl font-medium text-center mt-8">Login to Your Account</h2>
-            <p className=" text-center">Welcome back! Please enter your details.</p>
-            <div className="max-w-105 my-8 border shadow-sm rounded-md mx-auto p-5 space-y-3">
-                <Form className="flex w-96 flex-col gap-4 mx-auto p-5" onSubmit={onSubmit}>
+            <h2 className="text-3xl font-medium text-center mt-8">Login to Your Account</h2>
+            <p className="text-center text-gray-500">Welcome back! Please enter your details.</p>
 
+            <div className="max-w-md my-8 border shadow-sm rounded-md mx-auto p-5 space-y-3">
+                <Form className="flex w-full flex-col gap-4" onSubmit={onSubmit}>
                     {/* email */}
-
                     <TextField
                         isRequired
                         name="email"
@@ -55,7 +79,6 @@ const LoginPage = () => {
                         <Input placeholder="Enter your email" />
                         <FieldError />
                     </TextField>
-
 
                     <TextField
                         isRequired
@@ -76,27 +99,49 @@ const LoginPage = () => {
                         }}
                     >
                         <Label>Password</Label>
-                        <Input placeholder="Create a password" />
+                        <Input placeholder="Enter your password" />
                         <Description>Must be at least 8 characters with 1 uppercase and 1 number</Description>
                         <FieldError />
                     </TextField>
-                    <div className="flex gap-2">
-                        <Button type="submit" className=" w-full rounded-md bg-cyan-500 hover:bg-cyan-600 text-white">
-                            <Check />
-                            Login to Account
-                        </Button>
 
+                    <div className="flex justify-end">
+                        <Link href="/forgot-password" className="text-sm text-cyan-500 hover:underline">
+                            Forgot password?
+                        </Link>
                     </div>
+
+                    <Button
+                        type="submit"
+                        isDisabled={isSubmitting}
+                        className="w-full rounded-md bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    >
+                        <Check />
+                        {isSubmitting ? "Logging in..." : "Login to Account"}
+                    </Button>
                 </Form>
+
                 <div className="flex items-center gap-4 mt-3 w-full">
-    <hr className="flex-1 border-t border-gray-300" />
-    <span className="text-center text-gray-500  whitespace-nowrap">Or sign up with</span>
-    <hr className="flex-1 border-t border-gray-300" />
-</div>
-<Button variant="outline" className={'w-full flex items-center rounded-md gap-2'} onClick={handleGoogleSignIn}>
-  <FaGoogle />Sign In with Google
-</Button>
-<p className=" font-semibold text-center">Already have an account? <Link href="/login" className="text-cyan-500 hover:underline">Log in</Link></p>
+                    <hr className="flex-1 border-t border-gray-300" />
+                    <span className="text-center text-gray-500 whitespace-nowrap text-sm">Or sign in with</span>
+                    <hr className="flex-1 border-t border-gray-300" />
+                </div>
+
+                <Button
+                    variant="outline"
+                    isDisabled={isGoogleLoading}
+                    className="w-full flex items-center justify-center rounded-md gap-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    onClick={handleGoogleSignIn}
+                >
+                    <FaGoogle />
+                    {isGoogleLoading ? "Redirecting..." : "Sign In with Google"}
+                </Button>
+
+                <p className="font-semibold text-center text-sm">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/signup" className="text-cyan-500 hover:underline">
+                        Sign up
+                    </Link>
+                </p>
             </div>
         </div>
     );
