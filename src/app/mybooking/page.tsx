@@ -94,7 +94,7 @@ const MyBookingsPage = async () => {
                                         View
                                     </Button>
                                 </Link>
-                                <BookingDelete bookingId={booking._id} />
+                               <BookingDelete bookingId={booking._id} destinationName={booking.destinationName} />
                             </div>
                         </div>
                     ))}
