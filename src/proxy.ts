@@ -1,19 +1,21 @@
-import { NextResponse } from 'next/server'
-import { auth } from './lib/auth'
-import { headers } from 'next/headers'
- 
-export async function proxy(request) {
+import { NextResponse, type NextRequest } from "next/server";
+import { auth } from "./lib/auth";
+import { headers } from "next/headers";
 
+export async function middleware(request: NextRequest) {
     const session = await auth.api.getSession({
-    headers: await headers()
-})
+        headers: await headers(),
+    });
 
-if (!session) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    if (!session) {
+        const loginUrl = new URL("/login", request.url);
+        loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
+    }
+
+    return NextResponse.next();
 }
 
-}
- 
 export const config = {
-  matcher: ['/destination/:path*','/mybooking','/add-destination'],
-}
+    matcher: ["/destination/:path*", "/mybooking", "/add-destination"],
+};
