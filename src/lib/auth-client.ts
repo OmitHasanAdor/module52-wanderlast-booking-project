@@ -9,7 +9,7 @@ export const authClient = createAuthClient({
     ]
 })
 
-console.log(
-  "BETTER AUTH URL:",
-  process.env.NEXT_PUBLIC_BETTER_AUTH_URL
-);
+// console.log(
+//   "BETTER AUTH URL:",
+//   process.env.NEXT_PUBLIC_BETTER_AUTH_URL
+// );
