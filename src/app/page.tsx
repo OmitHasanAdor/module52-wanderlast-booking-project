@@ -4,14 +4,14 @@ import Link from "next/link";
 
 async function getFeaturedDestinations(): Promise<Destination[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destinations?limit=6`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination?limit=6`, {
             next: { revalidate: 60 },
         });
 
         if (!res.ok) return [];
 
         const data = await res.json();
-        return Array.isArray(data) ? data : data?.destinations ?? [];
+        return Array.isArray(data) ? data : data?.destination ?? [];
     } catch (err) {
         console.error("Failed to fetch featured destinations:", err);
         return [];
