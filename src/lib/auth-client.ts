@@ -1,15 +1,7 @@
-import { jwtClient } from "better-auth/client/plugins"
-import { createAuthClient } from "better-auth/react"
+import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  
-    baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL?.trim() || "https://module52-wanderlast-booking-project.vercel.app",
-    plugins: [
-        jwtClient()
-    ]
-})
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+});
 
-// console.log(
-//   "BETTER AUTH URL:",
-//   process.env.NEXT_PUBLIC_BETTER_AUTH_URL
-// );
+export const { signIn, signUp, signOut, useSession } = authClient;
