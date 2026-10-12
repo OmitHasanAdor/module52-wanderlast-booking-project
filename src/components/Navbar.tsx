@@ -28,20 +28,23 @@ const Navbar = () => {
   // Logged-in links (role based)
   const authLinks: NavLink[] = [];
 
-  if (user) {
-    authLinks.push({ href: "/mybooking", label: "My Bookings" });
+if (user) {
+  authLinks.push({ href: "/mybooking", label: "My Bookings" });
 
-    // Dashboard — role অনুসারে
+  // Dashboard — role অনুসারে
+  authLinks.push({
+    href: role === "admin" ? "/dashboard/admin" : "/dashboard/tourist",
+    label: "Dashboard",
+  });
+
+  // Add Destination — শুধু admin
+  if (role === "admin") {
     authLinks.push({
-      href: role === "admin" ? "/dashboard/admin" : "/dashboard/tourist",
-      label: "Dashboard",
+      href: "/dashboard/admin/add-destination",
+      label: "Add Destination",
     });
-
-    // Add Destination — শুধু admin
-    if (role === "admin") {
-      authLinks.push({ href: "/add-destination", label: "Add Destination" });
-    }
   }
+}
 
   const navLinks = [...publicLinks, ...authLinks];
 
@@ -52,10 +55,10 @@ const Navbar = () => {
         <Image
           src="/assets/Wanderlast.png"
           alt="Wanderlast Logo"
-          width={110}
-          height={50}
+          width={200}
+          height={200}
           priority
-          className="h-10 w-auto object-contain"
+          className="h-5 w-auto object-contain"
         />
       </Link>
 
