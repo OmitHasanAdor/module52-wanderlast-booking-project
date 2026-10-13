@@ -9,84 +9,101 @@ import { notFound } from "next/navigation";
 import type { Destination } from "@/components/DestinationCard";
 
 interface BookingDetailsPageProps {
-    params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 const BookingDetailsPage = async ({ params }: BookingDetailsPageProps) => {
-    const { id } = await params;
+  const { id } = await params;
 
-    const tokenResult = await auth.api.getToken({
-        headers: await headers(),
-    });
-    const token = tokenResult?.token;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const role = (session?.user as any)?.role || "tourist";
+  const isAdmin = role === "admin";
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination/${id}`, {
-        headers: {
-            authorization: `Bearer ${token}`,
-        },
-        cache: "no-store",
-    });
+  const tokenResult = await auth.api.getToken({
+    headers: await headers(),
+  });
+  const token = tokenResult?.token;
 
-    if (!res.ok) {
-        notFound();
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/destination/${id}`,
+    {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
     }
+  );
 
-    const destination: Destination = await res.json();
-    const { country, price, duration, description, destinationName, imageUrl } = destination;
+  if (!res.ok) {
+    notFound();
+  }
 
-    return (
-        <div className="rounded-2xl shadow-lg max-w-5xl mx-auto my-10 bg-white overflow-hidden">
-            <div className="relative">
-                <Image
-                    src={imageUrl}
-                    alt={destinationName}
-                    width={1000}
-                    height={500}
-                    priority
-                    className="w-full h-80 md:h-96 object-cover"
-                />
+  const destination: Destination = await res.json();
+  const { country, price, duration, description, destinationName, imageUrl } =
+    destination;
+
+  return (
+    <div className="mx-auto my-10 max-w-5xl overflow-hidden rounded-2xl bg-white shadow-lg">
+      <div className="relative">
+        <Image
+          src={imageUrl}
+          alt={destinationName}
+          width={1000}
+          height={500}
+          priority
+          className="h-80 w-full object-cover md:h-96"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-8 p-6 md:grid-cols-3 md:p-10">
+        {/* Left: details */}
+        <div className="space-y-5 md:col-span-2">
+          <span className="flex items-center gap-2 text-sm text-gray-500">
+            <MapPin width={16} height={16} />
+            {country}
+          </span>
+
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {destinationName}
+              </h1>
+              <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                <Calendar width={16} height={16} />
+                {duration} {duration === 1 ? "day" : "days"}
+              </div>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 p-6 md:p-10 gap-8">
-                {/* Left: details */}
-                <div className="space-y-5 md:col-span-2">
-                    <span className="flex items-center gap-2 text-gray-500 text-sm">
-                        <MapPin width={16} height={16} />
-                        {country}
-                    </span>
-
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">{destinationName}</h1>
-                            <div className="text-gray-600 flex gap-2 items-center mt-1 text-sm">
-                                <Calendar width={16} height={16} />
-                                {duration} {duration === 1 ? "day" : "days"}
-                            </div>
-                        </div>
-                        <div className="text-right whitespace-nowrap">
-                            <span className="font-bold text-lg text-gray-900">${price}</span>
-                            <span className="text-gray-500 text-sm">/person</span>
-                        </div>
-                    </div>
-
-                    <div className="border-t pt-5">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-2">Overview</h2>
-                        <p className="text-gray-500 leading-relaxed">{description}</p>
-                    </div>
-
-                    <div className="flex gap-3 mt-4 pt-2">
-                        <EditModal destination={destination} />
-                        <DeleteDestination destination={destination} />
-                    </div>
-                </div>
-
-                {/* Right: booking card */}
-                <div className="md:col-span-1">
-                    <BookingCard destination={destination} />
-                </div>
+            <div className="whitespace-nowrap text-right">
+              <span className="text-lg font-bold text-gray-900">${price}</span>
+              <span className="text-sm text-gray-500">/person</span>
             </div>
+          </div>
+
+          <div className="border-t pt-5">
+            <h2 className="mb-2 text-xl font-semibold text-gray-900">
+              Overview
+            </h2>
+            <p className="leading-relaxed text-gray-500">{description}</p>
+          </div>
+
+          {/* Edit + Delete → শুধু admin */}
+          {isAdmin && (
+            <div className="mt-4 flex gap-3 pt-2">
+              <EditModal destination={destination} />
+              <DeleteDestination destination={destination} />
+            </div>
+          )}
         </div>
-    );
+
+        {/* Right: booking card */}
+        <div className="md:col-span-1">
+          <BookingCard destination={destination} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default BookingDetailsPage;
