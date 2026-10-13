@@ -7,12 +7,12 @@ images: {
     {
       protocol: 'http',
       hostname: '**',
-      pathname: '/**',
+      pathname: '**',
     },
     {
       protocol: 'https',
       hostname: '**',
-      pathname: '/**',
+      pathname: '**',
     },
   ],
 },

@@ -1,136 +1,140 @@
 "use client";
 
-import { Separator } from "@heroui/react";
-import { useState, FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, Calendar, DollarSign, Users, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plane } from "lucide-react";
+
+const BACKGROUNDS = [
+  "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80",
+  "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80",
+  "https://images.unsplash.com/photo-1530789256252-ade271ddc56d?w=1920&q=80",
+  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80",
+];
+
+const STATS = [
+  { label: "Destinations", value: "50+" },
+  { label: "Happy Travelers", value: "12k+" },
+  { label: "Countries", value: "30+" },
+];
 
 const Banner = () => {
-    const router = useRouter();
-    const [location, setLocation] = useState("");
-    const [duration, setDuration] = useState("");
-    const [budget, setBudget] = useState("");
-    const [people, setPeople] = useState("");
+  const router = useRouter();
+  const [bgIndex, setBgIndex] = useState(0);
 
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        const params = new URLSearchParams();
-        if (location) params.set("location", location);
-        if (duration) params.set("duration", duration);
-        if (budget) params.set("budget", budget);
-        if (people) params.set("people", people);
-        router.push(`/destination?${params.toString()}`);
-    };
+  useEffect(() => {
+    const id = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % BACKGROUNDS.length);
+    }, 6000);
+    return () => clearInterval(id);
+  }, []);
 
-    return (
-        <div
-            style={{ backgroundImage: "url('/assets/Banner.png')" }}
-            className="bg-cover bg-center text-white flex justify-between flex-col items-center gap-5 min-h-137.5 w-full"
+  return (
+    <section className="relative min-h-[88vh] w-full overflow-hidden">
+      {/* Animated backgrounds */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={bgIndex}
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.4, ease: "easeOut" }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${BACKGROUNDS[bgIndex]})` }}
+        />
+      </AnimatePresence>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/75" />
+      <div className="absolute inset-0 bg-linear-to-r from-[#4f39f6]/25 via-transparent to-[#9514fa]/20" />
+
+      {/* Floating orbs */}
+      <motion.div
+        animate={{ y: [0, -24, 0], x: [0, 12, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute left-[10%] top-[20%] h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl"
+      />
+      <motion.div
+        animate={{ y: [0, 30, 0], x: [0, -16, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute bottom-[20%] right-[12%] h-52 w-52 rounded-full bg-purple-500/25 blur-3xl"
+      />
+
+      {/* Content */}
+      <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-7xl flex-col items-center justify-center px-4 py-24 text-center md:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white/90 backdrop-blur-md"
         >
-            <div className="p-10 text-center flex justify-center flex-col items-center gap-4 flex-1">
-                <h1 className="text-4xl md:text-7xl font-bold leading-tight">
-                    Discover Your <br /> Next Adventure
-                </h1>
+          <Plane className="h-4 w-4 text-cyan-300" />
+          <span>Your next journey starts here</span>
+        </motion.div>
 
-                <p className="text-lg md:text-2xl max-w-2xl text-gray-100">
-                    Explore breathtaking destinations and create unforgettable memories
-                    with our curated travel experiences.
-                </p>
+        <motion.h1
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+        >
+          Discover Your{" "}
+          <span className="bg-linear-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
+            Next Adventure
+          </span>
+        </motion.h1>
 
-                <div className="flex gap-5 mt-2">
-                    <button
-                        onClick={() => router.push("/destination")}
-                        className="uppercase bg-cyan-500 px-6 py-3 font-semibold cursor-pointer hover:bg-cyan-600 transition-all rounded-md"
-                    >
-                        Explore Now
-                    </button>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.25 }}
+          className="mt-5 max-w-2xl text-base text-gray-200 sm:text-lg md:text-xl"
+        >
+          Explore breathtaking destinations and create unforgettable memories
+          with curated travel experiences worldwide.
+        </motion.p>
 
-                    <button
-                        onClick={() => router.push("/destination")}
-                        className="uppercase px-6 py-3 bg-white/30 font-semibold cursor-pointer hover:bg-white/40 transition-all backdrop-blur-sm rounded-md"
-                    >
-                        View Destination
-                    </button>
-                </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-4"
+        >
+          <button
+            onClick={() => router.push("/destination")}
+            className="rounded-xl bg-linear-to-r from-cyan-500 to-blue-600 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-cyan-500/30 transition hover:scale-[1.03] hover:shadow-cyan-500/50"
+          >
+            Explore Now
+          </button>
+          <button
+            onClick={() => router.push("/destination")}
+            className="rounded-xl border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-white backdrop-blur-md transition hover:bg-white/20"
+          >
+            View Destinations
+          </button>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.55 }}
+          className="mt-14 flex flex-wrap justify-center gap-10 md:gap-16"
+        >
+          {STATS.map((s) => (
+            <div key={s.label} className="text-center">
+              <p className="text-2xl font-bold text-white md:text-3xl">
+                {s.value}
+              </p>
+              <p className="mt-1 text-xs uppercase tracking-wider text-white/60">
+                {s.label}
+              </p>
             </div>
-
-            {/* Search bar */}
-            <form
-                onSubmit={handleSearch}
-                className="bg-white/20 backdrop-blur-md flex flex-col md:flex-row justify-between gap-4 md:gap-2 w-full items-stretch md:items-center py-6 px-6 max-w-7xl mx-auto rounded-t-xl border border-white/10"
-            >
-                <div className="flex items-center gap-2 px-3">
-                    <MapPin size={18} className="text-cyan-300 shrink-0" />
-                    <div className="text-left w-full">
-                        <h3 className="text-sm font-semibold">Location</h3>
-                        <input
-                            type="text"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            placeholder="Address, City or Zip"
-                            className="bg-transparent outline-none text-xs text-gray-200 placeholder:text-gray-300 w-full"
-                        />
-                    </div>
-                </div>
-
-                <Separator orientation="vertical" className="hidden md:block h-10 bg-white/30" />
-
-                <div className="flex items-center gap-2 px-3">
-                    <Calendar size={18} className="text-cyan-300 shrink-0" />
-                    <div className="text-left w-full">
-                        <h3 className="text-sm font-semibold">Date/Duration</h3>
-                        <input
-                            type="text"
-                            value={duration}
-                            onChange={(e) => setDuration(e.target.value)}
-                            placeholder="Anytime / 3 Days"
-                            className="bg-transparent outline-none text-xs text-gray-200 placeholder:text-gray-300 w-full"
-                        />
-                    </div>
-                </div>
-
-                <Separator orientation="vertical" className="hidden md:block h-10 bg-white/30" />
-
-                <div className="flex items-center gap-2 px-3">
-                    <DollarSign size={18} className="text-cyan-300 shrink-0" />
-                    <div className="text-left w-full">
-                        <h3 className="text-sm font-semibold">Budget</h3>
-                        <input
-                            type="text"
-                            value={budget}
-                            onChange={(e) => setBudget(e.target.value)}
-                            placeholder="$0 - $3000"
-                            className="bg-transparent outline-none text-xs text-gray-200 placeholder:text-gray-300 w-full"
-                        />
-                    </div>
-                </div>
-
-                <Separator orientation="vertical" className="hidden md:block h-10 bg-white/30" />
-
-                <div className="flex items-center gap-2 px-3">
-                    <Users size={18} className="text-cyan-300 shrink-0" />
-                    <div className="text-left w-full">
-                        <h3 className="text-sm font-semibold">People</h3>
-                        <input
-                            type="text"
-                            value={people}
-                            onChange={(e) => setPeople(e.target.value)}
-                            placeholder="5 - 10"
-                            className="bg-transparent outline-none text-xs text-gray-200 placeholder:text-gray-300 w-full"
-                        />
-                    </div>
-                </div>
-
-                <button
-                    type="submit"
-                    className="flex items-center justify-center gap-2 bg-cyan-500 py-3 px-6 cursor-pointer hover:bg-cyan-600 transition-all rounded-md font-semibold shadow-lg shrink-0"
-                >
-                    <Search size={16} />
-                    Search
-                </button>
-            </form>
-        </div>
-    );
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
 };
 
 export default Banner;
